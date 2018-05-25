@@ -14,6 +14,7 @@
         <module>RepoModule</module>
         <module>DTOModule</module>
         <module>ServiceModule</module>
+        <module>TrelloApiModule</module>
     </modules>
 
     <properties>
