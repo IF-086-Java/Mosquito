@@ -1,40 +1,55 @@
 package com.softserve.mosquito.controllers;
 
-import com.restfb.Parameter;
-import com.restfb.Version;
-import com.restfb.types.User;
-import com.restfb.DefaultFacebookClient;
-import com.restfb.FacebookClient;
+
 import com.softserve.mosquito.dtos.UserDto;
 import com.softserve.mosquito.services.api.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.social.connect.ConnectionRepository;
+import org.springframework.social.facebook.api.Facebook;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
-@RestController
-@RequestMapping("/social/facebook")
+@Controller
+@RequestMapping("/fb")
 public class UserFBControler {
-    private static final String MY_APP_ACCESS_TOKEN="178289142884993|v56UAfXm1bqnU3Zro-KbwHAFYqw";
-
+    @Autowired
+    private final Facebook facebook;
+    @Autowired
+    private ConnectionRepository connectionRepository;
+    private UserDto userFromFb;
     private UserService userService;
 
-    @Autowired
-    public UserFBControler(UserService userService) {
-        this.userService = userService;
+    public UserFBControler(Facebook facebook, ConnectionRepository connectionRepository) {
+        this.facebook = facebook;
+        this.connectionRepository = connectionRepository;
     }
-
-    @GetMapping(path = "/signin")
+    @GetMapping(path = "/create")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<UserDto> getUserByFb() {
+    public UserDto createUserFb() {
+        if (connectionRepository.findPrimaryConnection(Facebook.class) == null) {
+            return null;
+        }
 
-        FacebookClient facebookClient = new DefaultFacebookClient(MY_APP_ACCESS_TOKEN, Version.VERSION_2_5);
+        userFromFb = UserDto.newBuilder().id(Long.getLong(facebook.userOperations().getUserProfile().getId()))
+                .email(facebook.userOperations().getUserProfile().getEmail())
+                .firstName(facebook.userOperations().getUserProfile().getFirstName())
+                .lastName(facebook.userOperations().getUserProfile().getLastName()).build();
 
-        User userFB = facebookClient.fetchObject("me", User.class,
-                Parameter.with("fields",
-                        "id, name, email, first_name, last_name"));
+        return userFromFb;
+    }
+    @GetMapping(path = "/login")
+    @ResponseStatus(HttpStatus.OK)
+    public UserDto userFromFb() {
+        if (connectionRepository.findPrimaryConnection(Facebook.class) == null) {
+            return null;
+        }
 
+        userFromFb = UserDto.newBuilder().id(Long.getLong(facebook.userOperations().getUserProfile().getId()))
+                .email(facebook.userOperations().getUserProfile().getEmail()).build();
 
-        return ResponseEntity.ok().body(userService.getByEmail(userFB.getEmail()));
+        return userFromFb;
     }
 }
