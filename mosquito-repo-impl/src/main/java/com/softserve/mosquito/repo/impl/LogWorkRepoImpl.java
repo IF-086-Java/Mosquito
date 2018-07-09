@@ -4,6 +4,7 @@ import com.softserve.mosquito.entities.LogWork;
 import com.softserve.mosquito.repo.api.LogWorkRepo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -28,10 +29,17 @@ public class LogWorkRepoImpl implements LogWorkRepo {
     }
 
     @Override
-    @Transactional
     public LogWork create(LogWork logWork) {
-        Session session = sessionFactory.getCurrentSession();
-        session.save(logWork);
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            Long logworkId = (Long)session.save(logWork);
+            logWork.setId(logworkId);
+        } catch (HibernateException e) {
+            LOGGER.error("Error during save logWork!");
+        } finally {
+            if (session != null) session.close();
+        }
         return logWork;
     }
 

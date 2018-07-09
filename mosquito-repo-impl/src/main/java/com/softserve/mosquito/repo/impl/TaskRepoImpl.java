@@ -4,6 +4,7 @@ import com.softserve.mosquito.entities.Task;
 import com.softserve.mosquito.repo.api.TaskRepo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Repository
@@ -24,11 +26,19 @@ public class TaskRepoImpl implements TaskRepo {
     }
 
     @Override
-    @Transactional
     public Task create(Task task) {
-        Session session = sessionFactory.getCurrentSession();
-        session.save(task);
-        return task;
+        Session session = null;
+        try {
+            session = sessionFactory.openSession();
+            Long taskId = (Long)session.save(task);
+            task.setId(taskId);
+            return task;
+        } catch (HibernateException e) {
+            LOGGER.error("Problem with creating task" + Arrays.toString(e.getStackTrace()));
+            return null;
+        } finally {
+            if (session != null) session.close();
+        }
     }
 
     @Override

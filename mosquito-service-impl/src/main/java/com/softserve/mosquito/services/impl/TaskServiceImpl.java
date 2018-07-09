@@ -38,19 +38,13 @@ public class TaskServiceImpl implements TaskService {
     }
 
 
-    @Transactional
     @Override
     public TaskDto save(TaskCreateDto taskCreateDto ){
         Task task = toEntity(taskCreateDto);
-        Estimation estimation = EstimationTransformer.toEntity(estimationService.createEstimation(EstimationDto.builder()
-                .timeEstimation(taskCreateDto.getEstimationTime())
-                .remaining(taskCreateDto.getEstimationTime())
-                .build()));
-        System.out.println("EstimationID: " + estimation.getId() + " time: " + estimation.getTimeEstimation());
-        task.setEstimation(estimation);
+
         task = taskRepo.create(task);
-        /*tasksBoardService.add(new TaskMongo(task.getId(), task.getName()), task.getOwner().getId(),
-                task.getWorker().getId());*/
+        tasksBoardService.add(new TaskMongo(task.getId(), task.getName()), task.getOwner().getId(),
+                task.getWorker().getId());
         return task == null ? null : toTaskDto(task);
     }
 

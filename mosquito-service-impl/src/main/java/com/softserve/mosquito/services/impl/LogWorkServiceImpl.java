@@ -26,7 +26,6 @@ public class LogWorkServiceImpl implements LogWorkService {
         this.estimationRepo = estimationRepo;
     }
 
-    @Transactional
     @Override
     public LogWorkDto save(Long estId, LogWorkDto logWorkDto, int remaining) {
         LogWork logWork = LogWorkTransformer.toEntity(logWorkDto);
