@@ -36,7 +36,7 @@ public class LogWorkServiceImpl implements LogWorkService {
         this.statusRepo = statusRepo;
     }
 
-    @Transactional
+
     @Override
     public LogWorkDto save(Long estId, LogWorkDto logWorkDto, int remaining) {
 
@@ -71,7 +71,7 @@ public class LogWorkServiceImpl implements LogWorkService {
         return LogWorkTransformer.toDTO(logWorkRepo.read(logWorkId));
     }
 
-    @Transactional
+
     @Override
     public LogWorkDto update(LogWorkDto logWorkDto, int remaining) {
         LogWork logWork = logWorkRepo.update(LogWorkTransformer.toEntity(logWorkDto));
