@@ -27,7 +27,6 @@ public class MailSender {
 
         MimeMessage mimeMessage = mailSender.createMimeMessage();
         try {
-
             mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
             mimeMessage.setSubject(subject);
             mimeMessage.setContent(message, "text/html");
