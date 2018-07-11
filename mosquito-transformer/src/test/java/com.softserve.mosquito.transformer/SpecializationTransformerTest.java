@@ -29,7 +29,7 @@ public class SpecializationTransformerTest {
         Set<Specialization> specializations = SpecializationTransformer.toEntityList(specializationDtoSet);
         Iterator<SpecializationDto> iter = specializationDtoSet.iterator();
         Specialization first = specializations.stream().findFirst().get();
-        assertEquals(specializationDto.getTitle(),first.getTitle() );
+        assertEquals(specializationDto1.getTitle(),first.getTitle() );
 
     }
 
@@ -47,7 +47,7 @@ public class SpecializationTransformerTest {
 
         Set<SpecializationDto> specializationDtos = SpecializationTransformer.toDTOList(specializations);
         SpecializationDto firstDto = specializationDtos.stream().findFirst().get();
-        assertEquals(specialization1.getTitle(), firstDto.getTitle());
+        assertEquals(specialization2.getTitle(), firstDto.getTitle());
     }
 
     @Test

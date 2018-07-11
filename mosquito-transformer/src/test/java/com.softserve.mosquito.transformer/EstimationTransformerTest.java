@@ -15,51 +15,51 @@ import static org.junit.Assert.assertNull;
 
 public class EstimationTransformerTest {
 
-//    @Test
-//    public void toEntity() {
-//        EstimationDto estimationDto = new EstimationDto();
-//        estimationDto.setId(1L);
-//        estimationDto.setTimeEstimation(100);
-//        estimationDto.setRemaining(100);
-//        SpecializationDto specializationDto1 = new SpecializationDto();
-//        specializationDto1.setId(2L);
-//        specializationDto1.setTitle("QC");
-//        SpecializationDto specializationDto2 = new SpecializationDto();
-//        specializationDto2.setId(3L);
-//        specializationDto2.setTitle("QA");
-//        Set<SpecializationDto> specializationDtos = new HashSet<>();
-//        specializationDtos.add(specializationDto1);
-//        specializationDtos.add(specializationDto2);
-//        UserDto userDto = UserDto.builder().email("test_email").password("test_passpword").id(6L).
-//                firstName("test_name").lastName("test_surname").
-//                specializations(specializationDtos).build();
-//        LogWorkDto logWorkDto = new LogWorkDto();
-//        logWorkDto.setId(4L);
-//        logWorkDto.setEstimationId(estimationDto.getId());
-//        logWorkDto.setLogged(10);
-//        logWorkDto.setUserId(userDto.getId());
-//        logWorkDto.setDescription("Test Description");
-//        List<LogWorkDto> logWorkDtos = new ArrayList<>();
-//        logWorkDtos.add(logWorkDto);
-//        PriorityDto priorityDto = new PriorityDto();
-//        priorityDto.setId(4L);
-//        priorityDto.setTitle("High");
-//        StatusDto statusDto = new StatusDto();
-//        statusDto.setId(6L);
-//        statusDto.setTitle("Doing");
-//        TaskFullDto taskFullDto = new TaskFullDto();
-//        taskFullDto.setId(8L);
-//        taskFullDto.setName("Test TaskDto");
-//        taskFullDto.setStatusDto(statusDto);
-//        taskFullDto.setPriorityDto(priorityDto);
-//        taskFullDto.setOwnerDto(userDto);
-//        taskFullDto.setEstimationDto(estimationDto);
-//        estimationDto.setTaskId(taskFullDto.getId());
-//        Estimation estimation = EstimationTransformer.toEntity(estimationDto);
-//
-//        assertEquals(estimationDto.getId(), estimation.getId());
-//        assertEquals(estimationDto.getRemaining(), estimation.getRemaining());
-//    }
+    @Test
+    public void toEntity() {
+        EstimationDto estimationDto = new EstimationDto();
+        estimationDto.setId(1L);
+        estimationDto.setTimeEstimation(100);
+        estimationDto.setRemaining(100);
+        SpecializationDto specializationDto1 = new SpecializationDto();
+        specializationDto1.setId(2L);
+        specializationDto1.setTitle("QC");
+        SpecializationDto specializationDto2 = new SpecializationDto();
+        specializationDto2.setId(3L);
+        specializationDto2.setTitle("QA");
+        Set<SpecializationDto> specializationDtos = new HashSet<>();
+        specializationDtos.add(specializationDto1);
+        specializationDtos.add(specializationDto2);
+        UserDto userDto = UserDto.builder().email("test_email").password("test_passpword").id(6L).
+                firstName("test_name").lastName("test_surname").
+                specializations(specializationDtos).build();
+        LogWorkDto logWorkDto = new LogWorkDto();
+        logWorkDto.setId(4L);
+        logWorkDto.setEstimationId(estimationDto.getId());
+        logWorkDto.setLogged(10);
+        logWorkDto.setUserId(userDto.getId());
+        logWorkDto.setDescription("Test Description");
+        List<LogWorkDto> logWorkDtos = new ArrayList<>();
+        logWorkDtos.add(logWorkDto);
+        PriorityDto priorityDto = new PriorityDto();
+        priorityDto.setId(4L);
+        priorityDto.setTitle("High");
+        StatusDto statusDto = new StatusDto();
+        statusDto.setId(6L);
+        statusDto.setTitle("Doing");
+        TaskCreateDto taskCreateDto = new TaskCreateDto();
+        taskCreateDto.setEstimationTime(100);
+        taskCreateDto.setOwnerId(5L);
+        taskCreateDto.setPriorityId(1L);
+        taskCreateDto.setStatusId(2L);
+        taskCreateDto.setName("Test Task");
+        taskCreateDto.setId(10L);
+        estimationDto.setTaskId(taskCreateDto.getId());
+        Estimation estimation = EstimationTransformer.toEntity(estimationDto);
+
+        assertEquals(estimationDto.getId(), estimation.getId());
+        assertEquals(estimationDto.getRemaining(), estimation.getRemaining());
+    }
 
     @Test
     public void toDTO() {
