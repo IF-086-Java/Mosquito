@@ -1,11 +1,11 @@
 package com.softserve.mosquito.services.impl;
 
 import com.softserve.mosquito.dtos.*;
+import com.softserve.mosquito.entities.mongo.TaskMongo;
 import com.softserve.mosquito.services.api.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,14 +24,15 @@ public class TrelloCardServiceImpl implements TrelloCardService {
     private TaskService taskService;
     private StatusService statusService;
     private TrelloInfoDto trelloInfo;
+    private TasksBoardService tasksBoardService;
 
     @Autowired
     public TrelloCardServiceImpl(TrelloInfoService trelloInfoService, TaskService taskService,
-                                 StatusService statusService) {
+                                 StatusService statusService, TasksBoardService tasksBoardService) {
         this.trelloInfoService = trelloInfoService;
         this.taskService = taskService;
         this.statusService = statusService;
-
+        this.tasksBoardService = tasksBoardService;
     }
 
     @Override
@@ -113,7 +114,9 @@ public class TrelloCardServiceImpl implements TrelloCardService {
 
     private void createTrelloTasks(List<TaskCreateDto> taskCreateDtoList) {
         for (TaskCreateDto taskCreateDto : taskCreateDtoList) {
-            taskService.save(taskCreateDto);
+            TaskDto task = taskService.save(taskCreateDto);
+            tasksBoardService.add(new TaskMongo(task.getId(),task.getName(),task.getStatus().getId()),
+                    task.getWorkerId());
         }
     }
 

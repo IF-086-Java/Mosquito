@@ -1,13 +1,10 @@
 package com.softserve.mosquito.services.impl;
 
 import com.mongodb.BasicDBObject;
-import com.softserve.mosquito.entities.Task;
 import com.softserve.mosquito.entities.mongo.TaskMongo;
 import com.softserve.mosquito.entities.mongo.TasksBoard;
 import com.softserve.mosquito.repo.api.TasksBoardRepo;
 import com.softserve.mosquito.services.api.TasksBoardService;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -55,13 +52,13 @@ public class TasksBoardServiceImpl implements TasksBoardService {
         Query query = new Query(
                 Criteria.where("taskMongos.taskId").is(id)
         );
-        mongoOperations.updateFirst(query, new Update().pull("taskMongos", new BasicDBObject("taskId", id)), TasksBoard.class);
+        mongoOperations.updateFirst(query, new Update().pull("taskMongos", new BasicDBObject("taskId", id)),
+                TasksBoard.class);
     }
 
     @Override
     public List<TaskMongo> getUserWork(Long userId) {
         TasksBoard tasksBoard = tasksBoardRepo.findByWorkerId(userId);
-
         return tasksBoard == null ? Collections.emptyList() : tasksBoard.getTaskMongos();
     }
 
@@ -71,7 +68,6 @@ public class TasksBoardServiceImpl implements TasksBoardService {
 
         return tasksBoard == null ? Collections.emptyList() :
                 tasksBoard.getTaskMongos().stream().filter(taskMongo -> taskMongo.getStatusId().equals(statusId))
-                .collect(Collectors.toList());
+                        .collect(Collectors.toList());
     }
-
 }
