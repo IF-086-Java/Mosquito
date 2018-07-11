@@ -144,4 +144,10 @@ public class TaskRepoImpl implements TaskRepo {
         query.setParameter("trelloId", trelloId);
         return query.uniqueResult();
     }
+    @Override
+    @Transactional(readOnly = true)
+    public Task readByEst(Long EstId) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Task.class, EstId);
+    }
 }

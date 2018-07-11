@@ -1,12 +1,17 @@
 package com.softserve.mosquito.controllers;
 
 import com.softserve.mosquito.dtos.LogWorkDto;
+import com.softserve.mosquito.dtos.TaskDto;
+import com.softserve.mosquito.entities.Task;
 import com.softserve.mosquito.services.api.LogWorkService;
+import com.softserve.mosquito.services.api.StatusService;
+import com.softserve.mosquito.services.api.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import com.softserve.mosquito.transformer.*;
 
 import java.util.List;
 
@@ -16,10 +21,13 @@ import java.util.List;
 public class LogWorkController {
 
     private LogWorkService logWorkService;
+    private TaskService taskService;
+    private StatusService statusService;
 
     @Autowired
-    public LogWorkController(LogWorkService logWorkService) {
-        this.logWorkService = logWorkService;
+    public LogWorkController(LogWorkService logWorkService, TaskService taskService, StatusService statusService) {
+                this.logWorkService = logWorkService;
+                this.taskService = taskService;
     }
 
     @PostMapping(path = "/{est_id}/log-works/{remaining}")
@@ -28,6 +36,16 @@ public class LogWorkController {
     public LogWorkDto createLogWork(@PathVariable("est_id") Long estId,
                                     @PathVariable("remaining") int remaining,
                                            @RequestBody LogWorkDto logWorkDto) {
+        if (logWorkService.getByEstimationId(estId)== null) {
+           TaskDto task = taskService.getSimpleTaskByEstId(estId);
+           task.setStatus(statusService.getById(2L));
+            taskService.update(TaskTransformer.toTaskCreateDto(task));
+        }
+        if (remaining==0) {
+            TaskDto task = taskService.getSimpleTaskByEstId(estId);
+            task.setStatus(statusService.getById(3L));
+            taskService.update(TaskTransformer.toTaskCreateDto(task));
+        }
 
         return logWorkService.save(estId, logWorkDto, remaining);
     }

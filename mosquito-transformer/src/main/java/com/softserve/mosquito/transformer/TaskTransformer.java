@@ -59,4 +59,14 @@ public class TaskTransformer {
         }
         return taskDtos;
     }
+
+    public static TaskCreateDto toTaskCreateDto(TaskDto taskDto){
+    return TaskCreateDto.builder().id(taskDto.getId())
+            .name(taskDto.getName())
+            .ownerId(taskDto.getOwnerId())
+            .workerId(taskDto.getWorkerId())
+            .estimationTime(taskDto.getEstimation().getTimeEstimation())
+            .statusId(taskDto.getStatus().getId())
+            .priorityId(taskDto.getPriority().getId())
+            .parentId((taskDto.getParentId())).build();}
 }

@@ -132,6 +132,13 @@ public class TaskServiceImpl implements TaskService {
         return toTaskDto(taskRepo.getByName(name));
     }
 
+    @Transactional
+    @Override
+    public TaskDto getSimpleTaskByEstId(Long id) {
+        Task task = taskRepo.readByEst(id);
+        return toTaskDto(task);
+    }
+
 
     @Transactional
     @Override
