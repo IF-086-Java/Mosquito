@@ -22,7 +22,5 @@ public interface UserService {
 
     void activateUser(String key);
 
-    void sendPushMessage(String message, Long userId);
-
     boolean isConfirmed(String email);
 }
