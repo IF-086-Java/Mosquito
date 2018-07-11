@@ -46,7 +46,6 @@ public class CommentController {
     @ResponseStatus(HttpStatus.OK)
     public CommentDto updateComment(@PathVariable("comment_id") Long commentId,
                                     @RequestBody CommentDto comment) {
-        comment.setId(commentId);
         return commentService.update(comment);
     }
 

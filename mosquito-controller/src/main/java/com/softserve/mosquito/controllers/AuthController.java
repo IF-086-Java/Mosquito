@@ -82,7 +82,7 @@ public class AuthController {
 
         if (!signUpRequest.getPassword().equals(signUpRequest.getConfirmPassword())) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).
-                    body(new LoginResponse(false, "Email and Confirm Email should be same"));
+                    body(new LoginResponse(false, "Password and Confirm Password should be same"));
         }
 
         signUpRequest.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));

@@ -21,41 +21,37 @@ public class CommentServiceImpl implements CommentService {
         this.repo = repo;
     }
 
-    @Transactional
-    @Override
-    public CommentDto save(CommentDto commentDto) {
-        Comment comment = repo.create(CommentTransformer.toEntity(commentDto));
-
-        return comment == null ? null : CommentTransformer.toDTO(comment);
-    }
-
     @Override
     @Transactional
     public CommentDto getById(Long id) {
         Comment comment = repo.read(id);
-
         return comment == null ? null : CommentTransformer.toDTO(comment);
     }
 
-    @Transactional
     @Override
+    @Transactional
+    public CommentDto save(CommentDto commentDto) {
+        Comment comment = repo.create(CommentTransformer.toEntity(commentDto));
+        return comment == null ? null : CommentTransformer.toDTO(comment);
+    }
+
+    @Override
+    @Transactional
     public CommentDto update(CommentDto commentDto) {
         Comment comment = repo.update(CommentTransformer.toEntity(commentDto));
-
         return comment == null ? null : CommentTransformer.toDTO(comment);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public void delete(Long id) {
         repo.delete(id);
     }
 
-    @Transactional
     @Override
+    @Transactional
     public List<CommentDto> getByTaskId(Long taskId) {
         List<Comment> comments = repo.getByTaskId(taskId);
-
         return CommentTransformer.toDTOList(comments);
     }
 }

@@ -40,7 +40,7 @@ public class TaskController {
     @PutMapping(path = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public TaskDto updateTask(@PathVariable("id") Long id, @RequestBody TaskDto taskDto) {
-        tasksBoardService.update(new TaskMongo(taskDto.getId(), taskDto.getName(), taskDto.getPriority().getId()),
+        tasksBoardService.update(new TaskMongo(taskDto.getId(), taskDto.getName(), taskDto.getStatus().getId()),
                 taskDto.getWorkerId());
         return taskService.update(taskDto);
     }
