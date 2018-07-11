@@ -14,36 +14,6 @@ import static org.junit.Assert.assertNull;
 
 public class TaskTransformerTest {
 
-    @Test
-    public void toEntity() {
-        EstimationDto estimationDto = new EstimationDto();
-        estimationDto.setTimeEstimation(100);
-        estimationDto.setId(1L);
-        estimationDto.setRemaining(100);
-        PriorityDto priorityDto = new PriorityDto();
-        priorityDto.setTitle("High");
-        priorityDto.setId(2L);
-        StatusDto statusDto = new StatusDto();
-        statusDto.setId(3L);
-        statusDto.setTitle("Doing");
-        SpecializationDto specializationDto1 = new SpecializationDto();
-        specializationDto1.setId(4L);
-        specializationDto1.setTitle("QC");
-        Set<SpecializationDto> specializationDtos = new HashSet<>();
-        specializationDtos.add(specializationDto1);
-        UserDto userDto = UserDto.builder().email("test_email").password("test_passpword").id(1L).
-                firstName("test_name").lastName("test_surname").
-                specializations(specializationDtos).build();
-        TaskCreateDto taskCreateDto = TaskCreateDto.builder().id(1L).name("TestTask")
-                .estimationTime(estimationDto.getTimeEstimation()).ownerId(userDto.getId())
-                .parentId(null).priorityId(priorityDto.getId()).statusId(statusDto.getId())
-                .workerId(userDto.getId()).trelloId("12336556dgdf").build();
-
-        Task task = TaskTransformer.toEntity(taskCreateDto);
-        assertEquals(taskCreateDto.getName(), task.getName());
-        assertEquals(taskCreateDto.getOwnerId(), task.getOwner().getId());
-        assertEquals(taskCreateDto.getId(), task.getId());
-    }
 
     @Test
     public void toTaskDTO() {
@@ -115,12 +85,7 @@ public class TaskTransformerTest {
         assertEquals(task.getId(), taskDto.getId());
         assertEquals(task.getName(),taskDto.getName());
     }
-    @Test
-    public void toEntity_null() {
-        TaskCreateDto taskCreateDto=null;
-        Task task = TaskTransformer.toEntity(taskCreateDto);
-        assertNull(task);
-    }
+
     @Test
     public void toTaskDTO_null() {
         Task task= null;

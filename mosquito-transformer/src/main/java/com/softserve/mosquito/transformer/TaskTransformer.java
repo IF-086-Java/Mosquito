@@ -14,26 +14,6 @@ public class TaskTransformer {
         throw new IllegalStateException("Utility class");
     }
 
-    public static Task toEntity(TaskCreateDto taskCreateDto) {
-        if (taskCreateDto == null) {
-            return null;
-        } else {
-            return Task.builder().
-                    id(taskCreateDto.getId())
-                    .name(taskCreateDto.getName())
-                    .owner(User.builder().id(taskCreateDto.getOwnerId()).build())
-                    .worker(User.builder().id(taskCreateDto.getWorkerId()).build())
-                    .priority(Priority.builder().id(taskCreateDto.getPriorityId()).build())
-                    .status(Status.builder().id(1L).build())
-                    .estimation(Estimation.builder().
-                            timeEstimation(taskCreateDto.getEstimationTime()).
-                            remaining(taskCreateDto.getEstimationTime()).task(Task.builder()
-                            .id(taskCreateDto.getId()).build()).build())
-                    .parentTask(Task.builder().id((taskCreateDto.getParentId() == null ? null : taskCreateDto.getParentId())).build())
-                    .trelloId(taskCreateDto.getTrelloId())
-                    .build();
-        }
-    }
 
     public static TaskDto toTaskDto(Task task) {
         if(task== null){

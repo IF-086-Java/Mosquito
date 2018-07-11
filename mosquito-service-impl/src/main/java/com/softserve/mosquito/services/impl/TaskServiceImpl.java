@@ -3,11 +3,11 @@ package com.softserve.mosquito.services.impl;
 
 import com.softserve.mosquito.dtos.TaskCreateDto;
 import com.softserve.mosquito.dtos.TaskDto;
+import com.softserve.mosquito.entities.Estimation;
 import com.softserve.mosquito.entities.Task;
 import com.softserve.mosquito.repo.api.TaskRepo;
-import com.softserve.mosquito.services.api.TaskService;
+import com.softserve.mosquito.services.api.*;
 
-import com.softserve.mosquito.services.api.UserService;
 import com.softserve.mosquito.transformer.EstimationTransformer;
 import com.softserve.mosquito.transformer.PriorityTransformer;
 import com.softserve.mosquito.transformer.StatusTransformer;
@@ -28,18 +28,26 @@ public class TaskServiceImpl implements TaskService {
     private TaskRepo taskRepo;
     private SimpMessagingTemplate template;
     private UserService userService;
+    private PriorityService priorityService;
+    private EstimationService estimationService;
+    private StatusService statusService;
 
     @Autowired
-    public TaskServiceImpl(TaskRepo taskRepo, SimpMessagingTemplate template, UserService userService) {
+    public TaskServiceImpl(TaskRepo taskRepo, SimpMessagingTemplate template, UserService userService,
+                           PriorityService priorityService, EstimationService estimationService,
+                           StatusService statusService) {
         this.taskRepo = taskRepo;
         this.template = template;
         this.userService = userService;
+        this.priorityService = priorityService;
+        this.estimationService = estimationService;
+        this.statusService = statusService;
     }
 
     @Transactional
     @Override
     public TaskDto save(TaskCreateDto taskCreateDto) {
-        Task task = toEntity(taskCreateDto);
+        Task task = transformToEntity(taskCreateDto);
         task = taskRepo.create(task);
         return task == null ? null : toTaskDto(task);
     }
@@ -47,7 +55,7 @@ public class TaskServiceImpl implements TaskService {
     @Transactional
     @Override
     public TaskDto update(TaskDto taskDto) {
-        Task task = taskRepo.update(toUpdateEntity(taskDto));
+        Task task = taskRepo.update(transformToEntity(taskDto));
         if (task == null)
             return null;
         return toTaskDto(taskRepo.read(task.getId()));
@@ -139,7 +147,7 @@ public class TaskServiceImpl implements TaskService {
         template.convertAndSendToUser(String.valueOf(userId), "/queue/reply", message);
     }
 
-    private Task toUpdateEntity(TaskDto taskDto ) {
+    private Task transformToEntity(TaskDto taskDto ) {
         if (taskDto == null) {
             return null;
         } else {
@@ -151,9 +159,27 @@ public class TaskServiceImpl implements TaskService {
                     .priority(PriorityTransformer.toEntity(taskDto.getPriority()))
                     .status(StatusTransformer.toEntity(taskDto.getStatus()))
                     .estimation(EstimationTransformer.toEntity(taskDto.getEstimation()))
-                    .parentTask(taskDto.getParentId()==null? null : toUpdateEntity(getParent(taskDto.getParentId())))
+                    .parentTask(taskDto.getParentId()==null? null : transformToEntity(getParent(taskDto.getParentId())))
                     .trelloId(taskDto.getTrelloId())
                     .build();
         }
+    }
+
+    private Task transformToEntity(TaskCreateDto taskCreateDto) {
+        if (taskCreateDto == null) return null;
+        return Task.builder()
+                .id(taskCreateDto.getId())
+                .name(taskCreateDto.getName())
+                .owner(UserTransformer.toEntity(userService.getById(taskCreateDto.getOwnerId())))
+                .worker(UserTransformer.toEntity(userService.getById(taskCreateDto.getWorkerId())))
+                .priority(PriorityTransformer.toEntity(priorityService.getById(taskCreateDto.getPriorityId())))
+                .status(StatusTransformer.toEntity(statusService.getById(taskCreateDto.getStatusId())))
+                .estimation(Estimation.builder().
+                timeEstimation(taskCreateDto.getEstimationTime()).
+                remaining(taskCreateDto.getEstimationTime()).task(Task.builder()
+                .id(taskCreateDto.getId()).build()).build())
+                .parentTask(taskCreateDto.getParentId()== null? null : transformToEntity(getById(taskCreateDto.getParentId())))
+                .trelloId(taskCreateDto.getTrelloId())
+                .build();
     }
 }
