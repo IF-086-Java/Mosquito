@@ -15,47 +15,47 @@ import static org.junit.Assert.assertNull;
 
 public class CommentTransformerTest {
 
-//    @Test
-//    public void toEntity() {
-//        CommentDto commentDto = new CommentDto();
-//        commentDto.setId(1L);
-//        commentDto.setText("Test Comment");
-//        EstimationDto estimationDto = new EstimationDto();
-//        estimationDto.setId(3L);
-//        estimationDto.setTimeEstimation(25);
-//        estimationDto.setRemaining(25);
-//        SpecializationDto specializationDto1 = new SpecializationDto();
-//        specializationDto1.setId(2L);
-//        specializationDto1.setTitle("QC");
-//        SpecializationDto specializationDto2 = new SpecializationDto();
-//        specializationDto2.setId(5L);
-//        specializationDto2.setTitle("QA");
-//        Set<SpecializationDto> specializationDtos = new HashSet<>();
-//        specializationDtos.add(specializationDto1);
-//        specializationDtos.add(specializationDto2);
-//        UserDto userDto = UserDto.builder().email("test_email").password("test_passpword").id(4L).
-//                firstName("test_name").lastName("test_surname").
-//                specializations(specializationDtos).build();
-//        PriorityDto priorityDto = new PriorityDto();
-//        priorityDto.setId(1L);
-//        priorityDto.setTitle("High");
-//        StatusDto statusDto = new StatusDto();
-//        statusDto.setId(2L);
-//        statusDto.setTitle("Doing");
-//        TaskFullDto taskFullDto = new TaskFullDto();
-//        taskFullDto.setId(3L);
-//        taskFullDto.setName("Test TaskDto");
-//        taskFullDto.setStatusDto(statusDto);
-//        taskFullDto.setPriorityDto(priorityDto);
-//        taskFullDto.setOwnerDto(userDto);
-//        taskFullDto.setEstimationDto(estimationDto);
-//        commentDto.setAuthorId(userDto.getId());
-//        commentDto.setTaskId(taskFullDto.getId());
-//        Comment comment = CommentTransformer.toEntity(commentDto);
-//        assertEquals(commentDto.getId(), comment.getId());
-//        assertEquals(commentDto.getText(), comment.getText());
-//        assertEquals(commentDto.getAuthorId(), comment.getAuthor().getId());
-//    }
+    @Test
+    public void toEntity() {
+        CommentDto commentDto = new CommentDto();
+        commentDto.setId(1L);
+        commentDto.setText("Test Comment");
+        EstimationDto estimationDto = new EstimationDto();
+        estimationDto.setId(3L);
+        estimationDto.setTimeEstimation(25);
+        estimationDto.setRemaining(25);
+        SpecializationDto specializationDto1 = new SpecializationDto();
+        specializationDto1.setId(2L);
+        specializationDto1.setTitle("QC");
+        SpecializationDto specializationDto2 = new SpecializationDto();
+        specializationDto2.setId(5L);
+        specializationDto2.setTitle("QA");
+        Set<SpecializationDto> specializationDtos = new HashSet<>();
+        specializationDtos.add(specializationDto1);
+        specializationDtos.add(specializationDto2);
+        UserDto userDto = UserDto.builder().email("test_email").password("test_passpword").id(4L).
+                firstName("test_name").lastName("test_surname").
+                specializations(specializationDtos).build();
+        PriorityDto priorityDto = new PriorityDto();
+        priorityDto.setId(1L);
+        priorityDto.setTitle("High");
+        StatusDto statusDto = new StatusDto();
+        statusDto.setId(2L);
+        statusDto.setTitle("Doing");
+        TaskCreateDto taskCreateDto = new TaskCreateDto();
+        taskCreateDto.setEstimationTime(100);
+        taskCreateDto.setOwnerId(5L);
+        taskCreateDto.setPriorityId(1L);
+        taskCreateDto.setStatusId(2L);
+        taskCreateDto.setName("Test Task");
+        taskCreateDto.setId(10L);
+        commentDto.setAuthorId(userDto.getId());
+        commentDto.setTaskId(taskCreateDto.getId());
+        Comment comment = CommentTransformer.toEntity(commentDto);
+        assertEquals(commentDto.getId(), comment.getId());
+        assertEquals(commentDto.getText(), comment.getText());
+        assertEquals(commentDto.getAuthorId(), comment.getAuthor().getId());
+    }
 
     @Test
     public void toDTO() {

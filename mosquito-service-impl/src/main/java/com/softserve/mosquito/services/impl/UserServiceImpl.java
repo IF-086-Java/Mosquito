@@ -24,11 +24,9 @@ public class UserServiceImpl implements UserService {
 
     private UserRepo userRepo;
     private MailSender mailSender;
-    private SimpMessagingTemplate template;
 
     @Autowired
-    public UserServiceImpl(SimpMessagingTemplate template, UserRepo userRepo, MailSender mailSender) {
-        this.template = template;
+    public UserServiceImpl(UserRepo userRepo, MailSender mailSender) {
         this.userRepo = userRepo;
         this.mailSender = mailSender;
     }
@@ -88,14 +86,6 @@ public class UserServiceImpl implements UserService {
             }
         }
         return userDtos;
-    }
-
-    @Transactional
-    @Override
-    public void sendPushMessage(String message, Long userId) {
-        Map<String,Object> headers = new HashMap<>();
-        headers.put("Content-Type","text/html");
-        template.convertAndSendToUser(String.valueOf(userId), "/queue/reply", message, headers);
     }
 
     @Override
