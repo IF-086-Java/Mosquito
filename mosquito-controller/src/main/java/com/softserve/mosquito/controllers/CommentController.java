@@ -26,8 +26,7 @@ public class CommentController {
     @PostMapping(path = "comments")
     @ApiOperation(value = "Add new comment for task", response = CommentDto.class)
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentDto createComment(@PathVariable("task_id") Long taskId,
-                                    @RequestBody CommentDto commentDto) {
+    public CommentDto createComment(@RequestBody CommentDto commentDto) {
         return commentService.save(commentDto);
     }
 
@@ -35,7 +34,7 @@ public class CommentController {
     @ApiOperation(value = "Get all comments for concrete task", response = CommentDto.class,
             responseContainer = "List")
     @ResponseStatus(HttpStatus.OK)
-    public List<CommentDto> getCommentsByTaskId(@PathVariable("task_id") Long taskId) {
+    public List<CommentDto> getByTaskId(@PathVariable("task_id") Long taskId) {
         if (commentService.getByTaskId(taskId).equals(Collections.emptyList()))
             throw new CommentNotFoundException("Comments for task with Id " + taskId + " not found!");
         return commentService.getByTaskId(taskId);
@@ -44,8 +43,7 @@ public class CommentController {
     @PutMapping(path = "/{comment_id}")
     @ApiOperation(value = "Update wrote comment", consumes = "application/json")
     @ResponseStatus(HttpStatus.OK)
-    public CommentDto updateComment(@PathVariable("comment_id") Long commentId,
-                                    @RequestBody CommentDto comment) {
+    public CommentDto updateComment(@RequestBody CommentDto comment) {
         return commentService.update(comment);
     }
 

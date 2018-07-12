@@ -38,7 +38,7 @@ public class CommentRepoImpl implements CommentRepo {
     public Comment update(Comment comment) {
         Session session = sessionFactory.getCurrentSession();
         session.update(comment);
-        return comment;
+        return session.get(Comment.class,comment.getId());
     }
 
     @Override
