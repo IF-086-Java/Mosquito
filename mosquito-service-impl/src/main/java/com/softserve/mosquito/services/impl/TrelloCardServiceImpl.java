@@ -130,7 +130,7 @@ public class TrelloCardServiceImpl implements TrelloCardService {
             trelloBoards = mapper.readValue(responseAsString, TrelloBoardDto[].class);
 
         } catch (Exception e) {
-            LOGGER.error("Problem with getAllTrelloBoards method" + Arrays.toString(e.getStackTrace()));
+            LOGGER.error("Problem with getAllTrelloBoards method" + e.getStackTrace());
             return new TrelloBoardDto[0];
         }
         return trelloBoards;
@@ -149,7 +149,7 @@ public class TrelloCardServiceImpl implements TrelloCardService {
             trelloLists = mapper.readValue(responseAsString, TrelloListDto[].class);
 
         } catch (Exception e) {
-            LOGGER.error("Problem with getTrelloListsByBoard method" + Arrays.toString(e.getStackTrace()));
+            LOGGER.error("Problem with getTrelloListsByBoard method" + e.getStackTrace());
             return new TrelloListDto[0];
         }
         return trelloLists;
@@ -168,7 +168,7 @@ public class TrelloCardServiceImpl implements TrelloCardService {
             trelloCards = mapper.readValue(responseAsString, TrelloCardDto[].class);
 
         } catch (Exception e) {
-            LOGGER.error("Problem with getTrelloCardsByList method" + Arrays.toString(e.getStackTrace()));
+            LOGGER.error("Problem with getTrelloCardsByList method" + e.getStackTrace());
             return new TrelloCardDto[0];
         }
         return trelloCards;
