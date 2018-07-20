@@ -12,7 +12,7 @@ import lombok.Setter;
 public class TrelloInfoDto {
 
     private Long id;
-    private UserDto userDto;
+    private Long userId;
     private String userTrelloName;
     private String userTrelloKey;
     private String userTrelloToken;

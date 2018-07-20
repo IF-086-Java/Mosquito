@@ -12,25 +12,13 @@ public class TrelloInfoTransformer {
         throw new IllegalStateException("Utility class");
     }
 
-    public static TrelloInfo toEntity(TrelloInfoDto trelloInfoDto) {
-        if (trelloInfoDto == null) {
-            return null;
-        } else
-            return new TrelloInfo(
-                    trelloInfoDto.getId(),
-                    UserTransformer.toEntity(trelloInfoDto.getUserDto()),
-                    trelloInfoDto.getUserTrelloName(),
-                    trelloInfoDto.getUserTrelloKey(),
-                    trelloInfoDto.getUserTrelloToken());
-    }
-
     public static TrelloInfoDto toDto(TrelloInfo trelloInfo) {
         if (trelloInfo == null) {
             return null;
         } else
             return new TrelloInfoDto(
                     trelloInfo.getId(),
-                    UserTransformer.toDto(trelloInfo.getUser()),
+                    trelloInfo.getUser().getId(),
                     trelloInfo.getUserTrelloName(),
                     trelloInfo.getUserTrelloKey(),
                     trelloInfo.getUserTrelloToken());
