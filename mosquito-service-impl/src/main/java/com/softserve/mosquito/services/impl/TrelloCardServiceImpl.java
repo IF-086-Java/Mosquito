@@ -1,6 +1,7 @@
 package com.softserve.mosquito.services.impl;
 
 import com.softserve.mosquito.dtos.*;
+import com.softserve.mosquito.entities.TrelloInfo;
 import com.softserve.mosquito.services.api.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +24,6 @@ public class TrelloCardServiceImpl implements TrelloCardService {
     private TrelloInfoService trelloInfoService;
     private TaskService taskService;
     private StatusService statusService;
-    private TrelloInfoDto trelloInfo;
 
     @Autowired
     public TrelloCardServiceImpl(TrelloInfoService trelloInfoService, TaskService taskService,
@@ -37,11 +37,11 @@ public class TrelloCardServiceImpl implements TrelloCardService {
     @Override
     public List<TaskCreateDto> getAllNewTrelloTasksOnFront(Long userId) {
 
-        trelloInfo = trelloInfoService.getByUserId(userId);
+        TrelloInfoDto trelloInfo = trelloInfoService.getByUserId(userId);
         List<TaskCreateDto> trelloTasks = new ArrayList<>();
 
-        for (TrelloBoardDto trelloBoard : getAllTrelloBoards()) {
-            for (TrelloListDto trelloList : getTrelloListsByBoard(trelloBoard.getId())) {
+        for (TrelloBoardDto trelloBoard : getAllTrelloBoards(trelloInfo)) {
+            for (TrelloListDto trelloList : getTrelloListsByBoard(trelloBoard.getId(), trelloInfo)) {
 
                 String listName = trelloList.getName();
                 if (listName.equalsIgnoreCase("todo")
@@ -67,7 +67,7 @@ public class TrelloCardServiceImpl implements TrelloCardService {
                     if (!taskService.isPresent(taskCreateDto.getTrelloId())
                             && !taskCreateDto.isPresentInCollection(trelloTasks)) trelloTasks.add(taskCreateDto);
 
-                    trelloTasks.addAll(collectTaskCreateDtosFromTrelloCards(getTrelloCardsByList(trelloList.getId()),
+                    trelloTasks.addAll(collectTaskCreateDtosFromTrelloCards(getTrelloCardsByList(trelloList.getId(), trelloInfo),
                             trelloList.getName().toLowerCase(), taskCreateDto, userId));
                 }
             }
@@ -78,14 +78,14 @@ public class TrelloCardServiceImpl implements TrelloCardService {
     @Override
     @Transactional
     public void createTasksFromTrello(Long userId) {
-        trelloInfo = trelloInfoService.getByUserId(userId);
+        TrelloInfoDto trelloInfo = trelloInfoService.getByUserId(userId);
         createTrelloTasks(getAllNewTrelloTasksOnFront(userId));
     }
 
     @Override
     @Transactional
     public void createChosenTasksFromTrelloJSON(Long userId, List<TaskCreateDto> taskCreateDtoList) {
-        trelloInfo = trelloInfoService.getByUserId(userId);
+        TrelloInfoDto trelloInfo = trelloInfoService.getByUserId(userId);
         createTrelloTasks(taskCreateDtoList);
     }
 
@@ -117,7 +117,7 @@ public class TrelloCardServiceImpl implements TrelloCardService {
         }
     }
 
-    private TrelloBoardDto[] getAllTrelloBoards() {
+    private TrelloBoardDto[] getAllTrelloBoards(TrelloInfoDto trelloInfo) {
         TrelloBoardDto[] trelloBoards = null;
 
         String urlGetAllBoards = String.format("https://trello.com/1/members/%s/boards?key=%s&token=%s",
@@ -136,7 +136,7 @@ public class TrelloCardServiceImpl implements TrelloCardService {
         return trelloBoards;
     }
 
-    private TrelloListDto[] getTrelloListsByBoard(String idBoard) {
+    private TrelloListDto[] getTrelloListsByBoard(String idBoard, TrelloInfoDto trelloInfo) {
         TrelloListDto[] trelloLists = null;
 
         String urlGetListOfBoard = String.format("https://trello.com/1/boards/%s/lists?cards=open&card_fields=name&fields=name&key=%s&token=%s",
@@ -155,7 +155,7 @@ public class TrelloCardServiceImpl implements TrelloCardService {
         return trelloLists;
     }
 
-    private TrelloCardDto[] getTrelloCardsByList(String idList) {
+    private TrelloCardDto[] getTrelloCardsByList(String idList, TrelloInfoDto trelloInfo) {
         TrelloCardDto[] trelloCards = null;
 
         String urlGetCardsByList = String.format("https://trello.com/1/lists/%s/cards?key=%s&token=%s",
